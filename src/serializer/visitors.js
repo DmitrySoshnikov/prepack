@@ -93,15 +93,6 @@ function canShareFunctionBody(duplicateFunctionInfo: FactoryFunctionInfo): boole
   return unbound.size === 0 && modified.size === 0 && !usesThis;
 }
 
-// TODO: enhance for nested functions accessing read-only free variables.
-function replaceNestedFunction(functionTag: number, path: BabelTraversePath, state: ClosureRefReplacerState) {
-  const duplicateFunctionInfo = state.factoryFunctionInfos.get(functionTag);
-  if (duplicateFunctionInfo && canShareFunctionBody(duplicateFunctionInfo)) {
-    const { factoryId } = duplicateFunctionInfo;
-    path.replaceWith(t.callExpression(t.memberExpression(factoryId, t.identifier("bind")), [nullExpression]));
-  }
-}
-
 export let ClosureRefReplacer = {
   ReferencedIdentifier(path: BabelTraversePath, state: ClosureRefReplacerState) {
     if (ignorePath(path)) return;
